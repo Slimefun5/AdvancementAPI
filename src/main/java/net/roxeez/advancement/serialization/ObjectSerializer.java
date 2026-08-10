@@ -41,15 +41,22 @@ public class ObjectSerializer {
             .registerTypeHierarchyAdapter(Biome.class, new BiomeAdapter())
             .registerTypeHierarchyAdapter(StructureType.class, new StructureTypeAdapter())
             .registerTypeHierarchyAdapter(GameMode.class, new GameModeAdapter())
-            // Serialize Bungee chat components through the stable, public ComponentSerializer.toString(...)
-            // rather than Bungee's internal per-type serializers: their public no-arg constructors were
-            // removed in modern bungeecord-chat (1.20.6+/26.x), so `new TextComponentSerializer()` and
-            // friends threw NoSuchMethodError at runtime.
-            .registerTypeHierarchyAdapter(BaseComponent.class, (JsonSerializer<BaseComponent>) (src, type, context) -> parseComponentJson(src))
+            .registerTypeHierarchyAdapter(BaseComponent.class, bungeeComponentAdapter())
             .create();
 
     public String serialize(Object object) {
         return GSON.toJson(object);
+    }
+
+    /**
+     * @implNote Routes Bungee chat components through the stable, public
+     * {@link ComponentSerializer#toString} rather than Bungee's internal per-type
+     * serializers, whose public no-arg constructors were removed in modern
+     * bungeecord-chat (1.20.6+/26.x): {@code new TextComponentSerializer()} and
+     * friends threw {@link NoSuchMethodError} at runtime.
+     */
+    private static JsonSerializer<BaseComponent> bungeeComponentAdapter() {
+        return (src, type, context) -> parseComponentJson(src);
     }
 
     @SuppressWarnings("deprecation") // compile target (spigot 1.16.5) ships gson 2.8.0, before JsonParser.parseString
