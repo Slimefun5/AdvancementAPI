@@ -8,9 +8,14 @@ plugins {
 group 'net.roxeez'
 version '1.0-SNAPSHOT'
 
-jar {
-    archivesBaseName = project.name
-    version = project.version
+base {
+    archivesName = project.name
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
 }
 
 repositories {
@@ -26,10 +31,10 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
-    testCompile group: 'org.mockito', name: 'mockito-core', version: '3.7.7'
-    testCompile 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
-    testCompile group: 'org.mockito', name: 'mockito-junit-jupiter', version: '3.7.7'
-    testCompile group: 'org.skyscreamer', name: 'jsonassert', version: '1.5.0'
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.7.7'
+    testImplementation 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
+    testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '3.7.7'
+    testImplementation group: 'org.skyscreamer', name: 'jsonassert', version: '1.5.0'
 }
 
 test {
