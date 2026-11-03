@@ -1,0 +1,23 @@
+name: Publish Release
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag to publish; empty takes the ref the run was started from'
+        required: false
+        type: string
+        default: ''
+  push:
+    tags:
+      - '*'
+permissions:
+  contents: write
+jobs:
+  publish:
+    uses: intisy/workflows/.github/workflows/publish.yml@main
+    with:
+      tag: ${{ inputs.tag }}
+      publish_task: publishGithub
+      gradle_args: --no-daemon
+    secrets:
+      envPAT: ${{ secrets.PAT }}
